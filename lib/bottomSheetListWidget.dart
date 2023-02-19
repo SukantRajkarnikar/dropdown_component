@@ -58,85 +58,81 @@ class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
         ),
-        builder: (BuildContext context) => DraggableScrollableSheet(
-            expand: false,
-            builder: (BuildContext context, ScrollController scrollController) {
-              return searchListComponent(
-                  context, title, listItems, scrollController);
-            }));
+        builder: (BuildContext context) => SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: bottomSheetComponent(context, title, listItems)));
   }
 
-  Widget searchListComponent(BuildContext context, String title,
-      List<CountryModel> listItems, ScrollController scrollController) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Center(child: Text(title, style: text_2F3036_14_Bold_w400)),
-          addVerticalSpace(16),
-          TextFormField(
-            style: text_1F2024_14_Regular_w400,
-            controller: searchTextController,
-            decoration: InputDecoration(
-              prefixIcon: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 12, end: 16),
-                child: Image.asset(
-                  IC_SEARCH,
-                  width: 8,
-                  height: 8,
-                  color: black_rgba_8F9098,
+  Widget bottomSheetComponent(
+      BuildContext context, String title, List<dynamic> listItems) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Center(child: Text(title, style: text_2F3036_14_Bold_w400)),
+            addVerticalSpace(16),
+            TextFormField(
+              style: text_1F2024_14_Regular_w400,
+              controller: searchTextController,
+              decoration: InputDecoration(
+                prefixIcon: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 12, end: 16),
+                  child: Image.asset(
+                    IC_SEARCH,
+                    width: 8,
+                    height: 8,
+                    color: black_rgba_8F9098,
+                  ),
                 ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                hintText: "Search",
+                hintStyle: text_8f9098_14_Normal_w400,
+                filled: true,
+                fillColor: const Color.fromRGBO(255, 255, 255, 1),
+                enabledBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Color.fromRGBO(197, 198, 204, 1)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF006FFD)),
+                    borderRadius: BorderRadius.circular(12)),
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              hintText: "Search",
-              hintStyle: text_8f9098_14_Normal_w400,
-              filled: true,
-              fillColor: const Color.fromRGBO(255, 255, 255, 1),
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    const BorderSide(color: Color.fromRGBO(197, 198, 204, 1)),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xFF006FFD)),
-                  borderRadius: BorderRadius.circular(12)),
-            ),
-            onChanged: (value) {
-              setState(() {
-                List searchList = [];
-                for (int i = 0; i < listItems.length; i++) {
-                  String name = listItems[i].name;
-                  if (name.toLowerCase().contains(value.toLowerCase())) {
-                    searchList.add(listItems[i]);
+              onChanged: (value) {
+                setState(() {
+                  List searchList = [];
+                  for (int i = 0; i < listItems.length; i++) {
+                    String name = listItems[i].name;
+                    if (name.toLowerCase().contains(value.toLowerCase())) {
+                      searchList.add(listItems[i]);
+                    }
                   }
-                }
-                tempList = searchList;
-              });
-            },
-          ),
-          addVerticalSpace(16),
-          Expanded(
-            child: ListView.separated(
-              controller: scrollController,
-              separatorBuilder: (context, a) {
-                return Container();
-              },
-              itemCount:
-                  ((searchTextController.text=="")
-                      ? listItems.length
-                      : tempList.length),
-              itemBuilder: (context, index) {
-                return listItemComponent(
-                    ((searchTextController.text == "")
-                            ? listItems
-                            : tempList)[index]
-                        .name);
+                  tempList = searchList;
+                });
               },
             ),
-          ),
-        ],
+            addVerticalSpace(16),
+            Expanded(
+              child: ListView.separated(
+                itemCount: ((searchTextController.text == "")
+                    ? listItems.length
+                    : tempList.length), // Example list items count
+                itemBuilder: (context, index) {
+                  return listItemComponent(((searchTextController.text == "")
+                          ? listItems
+                          : tempList)[index]
+                      .name);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Container();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -146,7 +142,7 @@ class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
       elevation: 0,
       color: const Color.fromRGBO(255, 255, 255, 1),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
