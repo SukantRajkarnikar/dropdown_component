@@ -1,4 +1,4 @@
-import 'package:dropdown_component/bottomSheetListWidget.dart';
+import 'package:dropdown_component/common_bottom_sheet_list_widget.dart';
 import 'package:dropdown_component/consts.dart';
 import 'package:dropdown_component/spinner_model.dart';
 import 'package:dropdown_component/widgets.dart';
@@ -56,7 +56,8 @@ class _AppBodyState extends State<AppBody> {
     SpinnerModel(18, "Australia2"),
   ];
 
-  String countrySelected = "";
+  String titleSelected = "";
+  TextEditingController textFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +75,36 @@ class _AppBodyState extends State<AppBody> {
                 ),
               ),
               addVerticalSpace(16),
-              BottomSheetListWidget(
-                context: context,
-                title: "Select Country",
-                modelList: countries,
-                callback: (SpinnerModel country) {
-                  countrySelected = country.title;
-                  debugPrint("-----------------------> $countrySelected");
+              TextField(
+                readOnly: true,
+                controller: textFieldController,
+                style: text_1F2024_14_Regular_w400,
+                decoration: InputDecoration(
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  hintText: "Select Country",
+                  hintStyle: text_8f9098_14_Normal_w400,
+                  filled: true,
+                  fillColor: const Color.fromRGBO(255, 255, 255, 1),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color.fromRGBO(197, 198, 204, 1)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFF006FFD)),
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                onTap: () {
+                  getBottomSheet(context,
+                    "Select Country",
+                    countries,
+                        (SpinnerModel selected) {
+                      titleSelected = selected.title;
+                      textFieldController.text= titleSelected;
+                      debugPrint("-----------------------> $titleSelected");
+                    },
+                  );
+                  debugPrint("Pressed");
                 },
               ),
             ],

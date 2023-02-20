@@ -3,59 +3,10 @@ import 'package:dropdown_component/spinner_model.dart';
 import 'package:dropdown_component/widgets.dart';
 import 'package:flutter/material.dart';
 
-class BottomSheetListWidget extends StatefulWidget {
-  final BuildContext context;
-  final String title;
-  final List<SpinnerModel> modelList;
-  final Function callback;
+TextEditingController _searchTextController = TextEditingController();
+List<dynamic> _tempList=[];
 
-  const BottomSheetListWidget(
-      {Key? key,
-      required this.context,
-      required this.title,
-      required this.modelList,
-      required this.callback})
-      : super(key: key);
-
-  @override
-  State<BottomSheetListWidget> createState() => _BottomSheetListWidgetState();
-}
-
-class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
-  final TextEditingController searchTextController = TextEditingController();
-  final TextEditingController textFieldController = TextEditingController();
-
-  List<dynamic> tempList = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      readOnly: true,
-      controller: textFieldController,
-      style: text_1F2024_14_Regular_w400,
-      decoration: InputDecoration(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        hintText: "Select Country",
-        hintStyle: text_8f9098_14_Normal_w400,
-        filled: true,
-        fillColor: const Color.fromRGBO(255, 255, 255, 1),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromRGBO(197, 198, 204, 1)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0xFF006FFD)),
-            borderRadius: BorderRadius.circular(12)),
-      ),
-      onTap: () {
-        getBottomSheet(widget.title, widget.modelList);
-        debugPrint("Pressed");
-      },
-    );
-  }
-
-  void getBottomSheet(String title, List<SpinnerModel> listItems) {
+void getBottomSheet(BuildContext context, String title, List<SpinnerModel> listItems, Function callback) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -74,7 +25,7 @@ class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
                     addVerticalSpace(16),
                     TextFormField(
                       style: text_1F2024_14_Regular_w400,
-                      controller: searchTextController,
+                      controller: _searchTextController,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsetsDirectional.only(
@@ -103,11 +54,7 @@ class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
                             borderRadius: BorderRadius.circular(12)),
                       ),
                       onChanged: (value) {
-                        debugPrint(
-                            "---------------------------> On changed Called");
                         setState(() {
-                          debugPrint(
-                              "---------------------------> set state called");
                           List searchList = [];
                           for (int i = 0; i < listItems.length; i++) {
                             String name = listItems[i].title;
@@ -117,35 +64,29 @@ class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
                               searchList.add(listItems[i]);
                             }
                           }
-                          tempList = searchList;
-                          debugPrint(
-                              "---------------------------> ${tempList.length}");
+                          _tempList = searchList;
                         });
                       },
                     ),
                     addVerticalSpace(16),
                     Expanded(
                       child: ListView.separated(
-                        itemCount: ((searchTextController.text == "")
+                        itemCount: ((_searchTextController.text == "")
                             ? listItems.length
-                            : tempList.length), // Example list items count
+                            : _tempList.length), // Example list items count
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              textFieldController.text =
-                                  (searchTextController.text == "")
-                                      ? listItems[index].title
-                                      : tempList[index].title;
-                              widget.callback((searchTextController.text == "")
+                              callback((_searchTextController.text == "")
                                   ? listItems[index]
-                                  : tempList[index]);
-                              searchTextController.text = "";
-                              Navigator.pop(widget.context);
+                                  : _tempList[index]);
+                              _searchTextController.text = "";
+                              Navigator.pop(context);
                             },
                             child: listItemComponent(
-                                ((searchTextController.text == "")
+                                ((_searchTextController.text == "")
                                         ? listItems
-                                        : tempList)[index]
+                                        : _tempList)[index]
                                     .title),
                           );
                         },
@@ -180,4 +121,4 @@ class _BottomSheetListWidgetState extends State<BottomSheetListWidget> {
       ),
     );
   }
-}
+
