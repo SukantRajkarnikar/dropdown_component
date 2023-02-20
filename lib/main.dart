@@ -1,6 +1,6 @@
 import 'package:dropdown_component/bottomSheetListWidget.dart';
 import 'package:dropdown_component/consts.dart';
-import 'package:dropdown_component/countryModel.dart';
+import 'package:dropdown_component/spinner_model.dart';
 import 'package:dropdown_component/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -35,27 +35,28 @@ class AppBody extends StatefulWidget {
 }
 
 class _AppBodyState extends State<AppBody> {
-
-  List<CountryModel> countries = [
-    CountryModel(1, "Nepal"),
-    CountryModel(2, "India"),
-    CountryModel(3, "China"),
-    CountryModel(4, "United States of America"),
-    CountryModel(5, "United Kingdom"),
-    CountryModel(6, "Australia"),
-    CountryModel(7, "Nepal1"),
-    CountryModel(8, "India1"),
-    CountryModel(9, "China1"),
-    CountryModel(10, "United States of America1"),
-    CountryModel(11, "United Kingdom1"),
-    CountryModel(12, "Australia1"),
-    CountryModel(13, "Nepal2"),
-    CountryModel(14, "India2"),
-    CountryModel(15, "China2"),
-    CountryModel(16, "United States of America2"),
-    CountryModel(17, "United Kingdom2"),
-    CountryModel(18, "Australia2"),
+  List<SpinnerModel> countries = [
+    SpinnerModel(1, "Nepal"),
+    SpinnerModel(2, "India"),
+    SpinnerModel(3, "China"),
+    SpinnerModel(4, "United States of America"),
+    SpinnerModel(5, "United Kingdom"),
+    SpinnerModel(6, "Australia"),
+    SpinnerModel(7, "Nepal1"),
+    SpinnerModel(8, "India1"),
+    SpinnerModel(9, "China1"),
+    SpinnerModel(10, "United States of America1"),
+    SpinnerModel(11, "United Kingdom1"),
+    SpinnerModel(12, "Australia1"),
+    SpinnerModel(13, "Nepal2"),
+    SpinnerModel(14, "India2"),
+    SpinnerModel(15, "China2"),
+    SpinnerModel(16, "United States of America2"),
+    SpinnerModel(17, "United Kingdom2"),
+    SpinnerModel(18, "Australia2"),
   ];
+
+  String countrySelected = "";
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,15 @@ class _AppBodyState extends State<AppBody> {
                 ),
               ),
               addVerticalSpace(16),
-              BottomSheetListWidget(context: context, title: "Select Country", modelList: countries),
+              BottomSheetListWidget(
+                context: context,
+                title: "Select Country",
+                modelList: countries,
+                callback: (SpinnerModel country) {
+                  countrySelected = country.title;
+                  debugPrint("-----------------------> $countrySelected");
+                },
+              ),
             ],
           ),
         ));
